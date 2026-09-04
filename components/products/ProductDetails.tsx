@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Toast, { type ToastType } from "@/components/ui/Toast";
 import type { Product } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
 
@@ -11,6 +12,11 @@ interface ProductDetailsProps {
 export default function ProductDetails({ product }: ProductDetailsProps) {
   const addToCart = useCartStore((state) => state.addToCart);
 
+  const [toast, setToast] = useState<{
+    message: string;
+    type: ToastType;
+  } | null>(null);
+
   const [selectedOption, setSelectedOption] = useState<string | number | null>(
     null,
   );
@@ -20,10 +26,18 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
   const handleAddToCart = () => {
     if (isOutOfStock) {
+      setToast({
+        message: "This product is out of stock.",
+        type: "error",
+      });
       return;
     }
 
     if (hasOption && selectedOption === null) {
+      setToast({
+        message: "Please select an option.",
+        type: "warning",
+      });
       return;
     }
 
@@ -43,11 +57,17 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     });
 
     if (!added) {
-      // We'll show a toast here in the next step.
+      setToast({
+        message: "Not enough stock available.",
+        type: "error",
+      });
       return;
     }
 
-    // We'll show a success toast here in the next step.
+    setToast({
+      message: "Added to cart.",
+      type: "success",
+    });
   };
 
   return (
@@ -134,6 +154,16 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           )}
         </div>
       </div>
+
+      {toast && (
+        <div className="fixed left-4 right-4 top-4 z-[100] sm:left-auto sm:right-5 sm:top-5">
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        </div>
+      )}
     </div>
   );
 }

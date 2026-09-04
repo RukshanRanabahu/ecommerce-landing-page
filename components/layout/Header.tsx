@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
+import CartDropdown from "./CartDropdown";
+import { useState } from "react";
 
 function ShoppingBagIcon({ className = "" }: { className?: string }) {
   return (
@@ -24,6 +26,8 @@ function ShoppingBagIcon({ className = "" }: { className?: string }) {
 export default function Header() {
   const items = useCartStore((state) => state.items);
 
+  const [cartOpen, setCartOpen] = useState(false);
+
   const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
 
   return (
@@ -35,20 +39,23 @@ export default function Header() {
         >
           Flat Rock Tech
         </Link>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setCartOpen((open) => !open)}
+            aria-label="Open shopping cart"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-gray-100"
+          >
+            <ShoppingBagIcon className="h-5 w-5 text-gray-700" />
 
-        <button
-          type="button"
-          aria-label="Open shopping cart"
-          className="relative flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-gray-100"
-        >
-          <ShoppingBagIcon className="h-5 w-5 text-gray-700" />
-
-          {totalQuantity > 0 && (
-            <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
-              {totalQuantity}
-            </span>
-          )}
-        </button>
+            {totalQuantity > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
+                {totalQuantity}
+              </span>
+            )}
+          </button>
+          {cartOpen && <CartDropdown onClose={() => setCartOpen(false)} />}
+        </div>
       </div>
     </header>
   );
