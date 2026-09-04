@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Product } from "@/types/product";
 
 interface ProductCardProps {
@@ -8,22 +9,30 @@ export default function ProductCard({ product }: ProductCardProps) {
   const isOutOfStock = product.stock_quantity === 0;
 
   return (
-    <article className="overflow-hidden rounded-lg border bg-white">
-      <div className="flex aspect-square items-center justify-center bg-gray-100">
-        <span className="text-sm text-gray-400">Product Image</span>
-      </div>
+    <article className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-md">
+      <Link href={`/products/${product.id}`}>
+        <div className="relative aspect-[4/3] bg-[#f0f0f0]">
+          <div className="flex h-full items-center justify-center">
+            <span className="text-sm text-gray-400">Product Image</span>
+          </div>
+        </div>
+      </Link>
 
       <div className="p-4">
-        <p className="mb-1 text-sm text-gray-500">{product.brand}</p>
+        <Link href={`/products/${product.id}`}>
+          <p className="text-sm font-semibold leading-tight text-gray-900">
+            {product.product_name}
+          </p>
 
-        <h2 className="font-semibold text-gray-900">{product.product_name}</h2>
+          <p className="mt-0.5 text-xs text-gray-400">{product.brand}</p>
 
-        <p className="mt-2 font-medium text-gray-900">
-          ${product.price.toFixed(2)}
-        </p>
+          <p className="mt-3 text-sm font-semibold text-gray-900">
+            ${product.price.toFixed(2)}
+          </p>
+        </Link>
 
         {isOutOfStock && (
-          <p className="mt-2 text-sm font-medium text-red-600">Out of stock</p>
+          <p className="mt-2 text-xs font-medium text-red-500">Out of stock</p>
         )}
       </div>
     </article>

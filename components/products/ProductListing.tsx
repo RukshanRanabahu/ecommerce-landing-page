@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Product } from "@/types/product";
 import ProductFilters from "./ProductFilters";
 import ProductGrid from "./ProductGrid";
-import SortByDropdown, { type SortOption } from "./SortByDropdown";
+import { type SortOption } from "./SortByDropdown";
 
 interface ProductListingProps {
   products: Product[];
@@ -17,10 +17,24 @@ export default function ProductListing({ products }: ProductListingProps) {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>("release_desc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [priceRange, setPriceRange] = useState({
-    min: 0,
-    max: 1000,
-  });
+
+  const priceBounds = useMemo(() => {
+    if (products.length === 0) {
+      return {
+        min: 0,
+        max: 1000,
+      };
+    }
+
+    const prices = products.map((product) => product.price);
+
+    return {
+      min: Math.floor(Math.min(...prices)),
+      max: Math.ceil(Math.max(...prices)),
+    };
+  }, [products]);
+
+  const [priceRange, setPriceRange] = useState(priceBounds);
 
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.category))],
@@ -98,25 +112,6 @@ export default function ProductListing({ products }: ProductListingProps) {
     setSortOption(sort);
     setCurrentPage(1);
   };
-  const priceBounds = useMemo(() => {
-    if (products.length === 0) {
-      return {
-        min: 0,
-        max: 1000,
-      };
-    }
-
-    const prices = products.map((product) => product.price);
-
-    return {
-      min: Math.floor(Math.min(...prices)),
-      max: Math.ceil(Math.max(...prices)),
-    };
-  }, [products]);
-
-  useEffect(() => {
-    setPriceRange(priceBounds);
-  }, [priceBounds]);
 
   return (
     <main className="min-h-screen bg-[#f5f5f7]">

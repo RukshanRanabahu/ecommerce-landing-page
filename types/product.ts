@@ -43,4 +43,6 @@ export interface CartItem {
     type: string;
     value: string | number;
   };
+  image?: string;
+  brand: string;
 }

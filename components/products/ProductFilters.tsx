@@ -27,12 +27,6 @@ interface ProductFiltersProps {
   onSortChange: (sort: SortOption) => void;
 }
 
-// const sortOptions = [
-//   { label: "Newest", value: "newest" },
-//   { label: "Price: Low to High", value: "price-low" },
-//   { label: "Price: High to Low", value: "price-high" },
-// ];
-
 function ChevronIcon({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -161,7 +155,7 @@ export default function ProductFilters({
       </div>
 
       {/* Dropdown filters */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-2">
         <Dropdown label="Brand" active={selectedBrands.length > 0}>
           <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-xl border border-gray-200 bg-white py-2 shadow-lg">
             {brands.map((brand) => {

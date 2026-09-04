@@ -1,30 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Nunito } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const nunito = Nunito({
   subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["400", "600", "700", "800"],
+  variable: "--font-nunito",
 });
 
 export const metadata: Metadata = {
-  title: "FRT Store",
-  description: "FRT Frontend Test Store",
+  title: "Flat Rock Tech",
+  description: "Product Listing",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
+    <html lang="en">
+      <body
+        className={`${inter.className} ${nunito.variable} min-h-full bg-[#f5f5f7]`}
+      >
         <Header />
         {children}
       </body>
