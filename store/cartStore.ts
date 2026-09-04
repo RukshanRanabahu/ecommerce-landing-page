@@ -32,6 +32,9 @@ export const useCartStore = create<CartStore>((set) => ({
       );
 
       if (existingItemIndex === -1) {
+        if (newItem.quantity > newItem.stockQuantity) {
+          return state;
+        }
         return {
           items: [...state.items, newItem],
         };
