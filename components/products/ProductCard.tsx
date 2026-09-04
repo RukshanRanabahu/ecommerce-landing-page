@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { ShoppingCartPlus } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 import type { Product } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
 import QuickAddModal from "./QuickAddModal";
 import Toast, { type ToastType } from "@/components/ui/Toast";
+import { getProductImage } from "@/lib/productImages";
 
 interface ProductCardProps {
   product: Product;
@@ -46,6 +48,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       quantity: 1,
       stockQuantity: product.stock_quantity,
       brand: product.brand,
+      image: getProductImage(product.category),
     });
 
     if (!added) {
@@ -69,9 +72,15 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="relative aspect-[4/3] bg-[#f0f0f0]">
           <Link
             href={`/products/${product.id}`}
-            className="flex h-full items-center justify-center"
+            className="relative block aspect-[4/3] overflow-hidden bg-[#f0f0f0]"
           >
-            <span className="text-sm text-gray-400">Product Image</span>
+            <Image
+              src={getProductImage(product.category)}
+              alt={product.product_name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover"
+            />
           </Link>
 
           {/* Quick Add */}
@@ -80,7 +89,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             onClick={handleQuickAdd}
             disabled={isOutOfStock}
             aria-label={`Add ${product.product_name} to cart`}
-            // className="absolute right-3 top-3 cursor-pointer flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm opacity-0 transition-opacity hover:bg-gray-50 group-hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
             className="absolute right-3 top-3 cursor-pointer flex h-8 w-8 items-center justify-center rounded-lg bg-white shadow-sm transition-opacity hover:bg-gray-50 group-hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <ShoppingCartPlus className="h-4 w-4 text-gray-700" />

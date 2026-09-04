@@ -1,9 +1,9 @@
 "use client";
 
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
 import CartDropdown from "./CartDropdown";
-import { useState } from "react";
 
 function ShoppingBagIcon({ className = "" }: { className?: string }) {
   return (
@@ -25,6 +25,12 @@ function ShoppingBagIcon({ className = "" }: { className?: string }) {
 
 export default function Header() {
   const items = useCartStore((state) => state.items);
+
+  const hasHydrated = useSyncExternalStore(
+    (listener) => useCartStore.persist.onFinishHydration(listener),
+    () => useCartStore.persist.hasHydrated(),
+    () => false,
+  );
 
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -48,7 +54,7 @@ export default function Header() {
           >
             <ShoppingBagIcon className="h-5 w-5 text-gray-700" />
 
-            {totalQuantity > 0 && (
+            {hasHydrated && totalQuantity > 0 && (
               <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
                 {totalQuantity}
               </span>

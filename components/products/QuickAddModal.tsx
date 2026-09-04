@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import type { Product } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
 import Toast, { type ToastType } from "@/components/ui/Toast";
+import { getProductImage } from "@/lib/productImages";
 
 interface QuickAddModalProps {
   product: Product;
@@ -53,6 +54,7 @@ export default function QuickAddModal({
       quantity: 1,
       stockQuantity: product.stock_quantity,
       brand: product.brand,
+      image: getProductImage(product.category),
       selectedOption: hasOption
         ? {
             type: product.selectible_option!.option_type,

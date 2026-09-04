@@ -4,6 +4,8 @@ import { useState } from "react";
 import Toast, { type ToastType } from "@/components/ui/Toast";
 import type { Product } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
+import Image from "next/image";
+import { getProductImage } from "@/lib/productImages";
 
 interface ProductDetailsProps {
   product: Product;
@@ -48,6 +50,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       quantity: 1,
       stockQuantity: product.stock_quantity,
       brand: product.brand,
+      image: getProductImage(product.category),
       selectedOption: hasOption
         ? {
             type: product.selectible_option!.option_type,
@@ -73,8 +76,15 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   return (
     <div className="grid gap-10 md:grid-cols-2 lg:gap-16">
       {/* Product Image */}
-      <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl bg-gray-100">
-        <span className="text-sm text-gray-400">Product Image</span>
+      {/* Product Image */}
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100">
+        <Image
+          src={getProductImage(product.category)}
+          alt={product.product_name}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover"
+        />
       </div>
 
       {/* Product Details */}

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
+import Image from "next/image";
 
 interface CartDropdownProps {
   onClose: () => void;
@@ -19,6 +19,12 @@ export default function CartDropdown({ onClose }: CartDropdownProps) {
     (total, item) => total + item.price * item.quantity,
     0,
   );
+
+  const getProductQuantityInCart = (productId: string) => {
+    return items
+      .filter((item) => item.productId === productId)
+      .reduce((total, item) => total + item.quantity, 0);
+  };
 
   return (
     <>
@@ -58,8 +64,15 @@ export default function CartDropdown({ onClose }: CartDropdownProps) {
                   className="flex items-start gap-3"
                 >
                   {/* Thumbnail */}
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-gray-100">
-                    <ShoppingBag className="h-6 w-6 text-gray-300" />
+                  {/* Thumbnail */}
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                    <Image
+                      src={item.image ?? "/products/shirt-placeholder.jpg"}
+                      alt={item.productName}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
                   </div>
 
                   {/* Info */}
@@ -105,7 +118,10 @@ export default function CartDropdown({ onClose }: CartDropdownProps) {
                         onClick={() =>
                           increaseQuantity(item.productId, item.selectedOption)
                         }
-                        disabled={item.quantity >= item.stockQuantity}
+                        disabled={
+                          getProductQuantityInCart(item.productId) >=
+                          item.stockQuantity
+                        }
                         className="flex h-7 w-7 items-center justify-center rounded-md bg-gray-100 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
                         aria-label={`Increase quantity of ${item.productName}`}
                       >
