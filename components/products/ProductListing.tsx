@@ -13,6 +13,11 @@ interface ProductListingProps {
 
 const ITEMS_PER_PAGE = 16;
 
+const parsePriceParam = (value: string | null, fallback: number) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
 export default function ProductListing({ products }: ProductListingProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -37,10 +42,17 @@ export default function ProductListing({ products }: ProductListingProps) {
 
   const pageParam = searchParams.get("page");
 
-  const currentPage = Math.max(
-    1,
-    Number.isNaN(Number(pageParam)) ? 1 : Number(pageParam),
-  );
+  const parsedPage = Number(pageParam);
+
+  const currentPage =
+    Number.isFinite(parsedPage) && parsedPage >= 1 ? parsedPage : 1;
+
+  const updateUrl = (params: URLSearchParams) => {
+    router.push(
+      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
+      { scroll: false },
+    );
+  };
 
   const priceBounds = useMemo(() => {
     if (products.length === 0) {
@@ -63,8 +75,8 @@ export default function ProductListing({ products }: ProductListingProps) {
 
   const priceRange = useMemo(
     () => ({
-      min: minPriceParam ? Number(minPriceParam) : priceBounds.min,
-      max: maxPriceParam ? Number(maxPriceParam) : priceBounds.max,
+      min: parsePriceParam(minPriceParam, priceBounds.min),
+      max: parsePriceParam(maxPriceParam, priceBounds.max),
     }),
     [minPriceParam, maxPriceParam, priceBounds],
   );
@@ -108,8 +120,11 @@ export default function ProductListing({ products }: ProductListingProps) {
         return [...filtered].sort((a, b) => a.price - b.price);
 
       case "release_desc":
-      default:
-        return filtered;
+        return [...filtered].sort(
+          (a, b) =>
+            new Date(b.release_date).getTime() -
+            new Date(a.release_date).getTime(),
+        );
     }
   }, [products, selectedCategory, selectedBrands, priceRange, sortOption]);
 
@@ -139,12 +154,7 @@ export default function ProductListing({ products }: ProductListingProps) {
 
     params.delete("page");
 
-    router.replace(
-      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
-      {
-        scroll: false,
-      },
-    );
+    updateUrl(params);
   };
 
   const handleBrandToggle = (brand: string) => {
@@ -166,12 +176,7 @@ export default function ProductListing({ products }: ProductListingProps) {
 
     params.delete("page");
 
-    router.replace(
-      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
-      {
-        scroll: false,
-      },
-    );
+    updateUrl(params);
   };
 
   const handleSortChange = (sort: SortOption) => {
@@ -185,10 +190,7 @@ export default function ProductListing({ products }: ProductListingProps) {
 
     params.delete("page");
 
-    router.replace(
-      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
-      { scroll: false },
-    );
+    updateUrl(params);
   };
 
   const updatePage = (page: number) => {
@@ -200,10 +202,7 @@ export default function ProductListing({ products }: ProductListingProps) {
       params.set("page", String(page));
     }
 
-    router.replace(
-      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
-      { scroll: false },
-    );
+    updateUrl(params);
   };
 
   return (
@@ -238,12 +237,7 @@ export default function ProductListing({ products }: ProductListingProps) {
 
             params.delete("page");
 
-            router.replace(
-              `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
-              {
-                scroll: false,
-              },
-            );
+            updateUrl(params);
           }}
           sortOption={sortOption}
           onSortChange={handleSortChange}
