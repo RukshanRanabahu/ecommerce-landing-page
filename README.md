@@ -115,11 +115,12 @@ frt-frontend/
 │   ├── checkout/
 │   │   └── CheckoutForm.tsx
 │   │
-│   ├── layout/
-│   │   └── Header.tsx
+├── layout/
+│   ├── CartDropdown.tsx
+│   └── Header.tsx
+│
 │   │
 │   ├── products/
-│   │   ├── CartDropdown.tsx
 │   │   ├── PriceFilterSlider.tsx
 │   │   ├── ProductCard.tsx
 │   │   ├── ProductDetails.tsx
