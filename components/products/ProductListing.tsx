@@ -10,7 +10,7 @@ interface ProductListingProps {
   products: Product[];
 }
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 16;
 
 export default function ProductListing({ products }: ProductListingProps) {
   const [selectedCategory, setSelectedCategory] = useState("all");

@@ -42,6 +42,7 @@ export interface CartItem {
   selectedOption?: {
     type: string;
     value: string | number;
+    label: string;
   };
   image?: string;
   brand: string;

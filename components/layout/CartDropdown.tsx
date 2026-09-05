@@ -91,7 +91,7 @@ export default function CartDropdown({ onClose }: CartDropdownProps) {
 
                     {item.selectedOption && (
                       <p className="mt-1 text-xs text-gray-500">
-                        {item.selectedOption.type}:{" "}
+                        {item.selectedOption.label}:{" "}
                         {String(item.selectedOption.value)}
                       </p>
                     )}
@@ -103,10 +103,10 @@ export default function CartDropdown({ onClose }: CartDropdownProps) {
                         onClick={() =>
                           decreaseQuantity(item.productId, item.selectedOption)
                         }
-                        className="flex h-7 w-7 items-center justify-center rounded-md bg-gray-100 transition-colors hover:bg-gray-200"
+                        className="flex h-7 w-7 items-center cursor-pointer justify-center rounded-md bg-gray-100 transition-colors hover:bg-gray-200"
                         aria-label={`Decrease quantity of ${item.productName}`}
                       >
-                        <Minus className="h-3 w-3 text-gray-700" />
+                        <Minus className="h-3 w-3 text-gray-700 " />
                       </button>
 
                       <span className="w-4 text-center text-sm font-semibold text-gray-800">
@@ -122,7 +122,7 @@ export default function CartDropdown({ onClose }: CartDropdownProps) {
                           getProductQuantityInCart(item.productId) >=
                           item.stockQuantity
                         }
-                        className="flex h-7 w-7 items-center justify-center rounded-md bg-gray-100 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="flex h-7 w-7 items-center justify-center cursor-pointer rounded-md bg-gray-100 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
                         aria-label={`Increase quantity of ${item.productName}`}
                       >
                         <Plus className="h-3 w-3 text-gray-700" />
@@ -144,7 +144,7 @@ export default function CartDropdown({ onClose }: CartDropdownProps) {
                       aria-label={`Remove ${item.productName} from cart`}
                       className="text-gray-400 transition-colors hover:text-red-500"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4 cursor-pointer" />
                     </button>
                   </div>
                 </div>

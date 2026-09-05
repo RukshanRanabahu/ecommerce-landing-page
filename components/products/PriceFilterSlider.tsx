@@ -1,7 +1,5 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-
 interface PriceRange {
   min: number;
   max: number;
@@ -20,35 +18,20 @@ export default function PriceFilterSlider({
   value,
   onChange,
 }: PriceFilterSliderProps) {
-  const [minValue, setMinValue] = useState(value.min);
-  const [maxValue, setMaxValue] = useState(value.max);
+  const minValue = value.min;
+  const maxValue = value.max;
 
-  const previousValue = useRef(value);
+  const range = max - min;
 
-  useEffect(() => {
-    if (
-      value.min !== previousValue.current.min ||
-      value.max !== previousValue.current.max
-    ) {
-      setMinValue(value.min);
-      setMaxValue(value.max);
-      previousValue.current = value;
-    }
-  }, [value]);
+  const minPercent = range > 0 ? ((minValue - min) / range) * 100 : 0;
 
-  const minPercent = ((minValue - min) / (max - min)) * 100;
-  const maxPercent = ((maxValue - min) / (max - min)) * 100;
+  const maxPercent = range > 0 ? ((maxValue - min) / range) * 100 : 100;
 
-  const clamp = useCallback(
-    (number: number, lower: number, upper: number) =>
-      Math.min(Math.max(number, lower), upper),
-    [],
-  );
+  const clamp = (number: number, lower: number, upper: number) =>
+    Math.min(Math.max(number, lower), upper);
 
   const updateMin = (rawValue: number) => {
     const newValue = clamp(rawValue, min, maxValue);
-
-    setMinValue(newValue);
 
     onChange({
       min: newValue,
@@ -58,8 +41,6 @@ export default function PriceFilterSlider({
 
   const updateMax = (rawValue: number) => {
     const newValue = clamp(rawValue, minValue, max);
-
-    setMaxValue(newValue);
 
     onChange({
       min: minValue,
@@ -81,8 +62,10 @@ export default function PriceFilterSlider({
 
       {/* Slider */}
       <div className="relative mb-6 h-5">
+        {/* Base track */}
         <div className="absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full bg-gray-200" />
 
+        {/* Active range */}
         <div
           className="absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-blue-500"
           style={{
@@ -91,26 +74,37 @@ export default function PriceFilterSlider({
           }}
         />
 
+        {/* Minimum range input */}
         <input
           type="range"
           min={min}
           max={max}
+          step={1}
           value={minValue}
           onChange={(event) => updateMin(Number(event.target.value))}
-          className="pointer-events-none absolute top-1/2 h-1.5 w-full -translate-y-1/2 appearance-none bg-transparent"
-          style={{ zIndex: minValue >= maxValue ? 5 : 3 }}
+          aria-label="Minimum price"
+          className="absolute inset-0 h-5 w-full cursor-pointer appearance-none bg-transparent opacity-0"
+          style={{
+            zIndex: minValue >= maxValue ? 5 : 3,
+          }}
         />
 
+        {/* Maximum range input */}
         <input
           type="range"
           min={min}
           max={max}
+          step={1}
           value={maxValue}
           onChange={(event) => updateMax(Number(event.target.value))}
-          className="pointer-events-none absolute top-1/2 h-1.5 w-full -translate-y-1/2 appearance-none bg-transparent"
-          style={{ zIndex: 4 }}
+          aria-label="Maximum price"
+          className="absolute inset-0 h-5 w-full cursor-pointer appearance-none bg-transparent opacity-0"
+          style={{
+            zIndex: 4,
+          }}
         />
 
+        {/* Minimum thumb */}
         <div
           className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-white bg-blue-500 shadow"
           style={{
@@ -118,6 +112,7 @@ export default function PriceFilterSlider({
           }}
         />
 
+        {/* Maximum thumb */}
         <div
           className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-blue-300 bg-white shadow"
           style={{
@@ -138,6 +133,7 @@ export default function PriceFilterSlider({
             inputMode="numeric"
             value={minValue}
             onChange={(event) => updateMin(parseInput(event.target.value))}
+            aria-label="Minimum price"
             className="w-full rounded-full border border-gray-200 py-2 pl-6 pr-3 text-center text-sm text-gray-700 outline-none focus:border-blue-400"
           />
         </div>
@@ -154,6 +150,7 @@ export default function PriceFilterSlider({
             inputMode="numeric"
             value={maxValue}
             onChange={(event) => updateMax(parseInput(event.target.value))}
+            aria-label="Maximum price"
             className="w-full rounded-full border border-gray-200 py-2 pl-6 pr-3 text-center text-sm text-gray-700 outline-none focus:border-blue-400"
           />
         </div>

@@ -157,7 +157,7 @@ export default function ProductFilters({
       {/* Dropdown filters */}
       <div className="flex items-center gap-2">
         <Dropdown label="Brand" active={selectedBrands.length > 0}>
-          <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-xl border border-gray-200 bg-white py-2 shadow-lg">
+          <div className="absolute left-1/2 top-full z-20 mt-1 w-36 max-w-xs -translate-x-1/2 rounded-xl border border-gray-200 bg-white py-2 shadow-lg sm:left-auto sm:right-0 sm:translate-x-0">
             {brands.map((brand) => {
               const checked = selectedBrands.includes(brand);
 
@@ -189,7 +189,7 @@ export default function ProductFilters({
           label="Price"
           active={priceRange.min > priceMin || priceRange.max < priceMax}
         >
-          <div className="absolute right-0 top-full z-50 mt-2 w-80">
+          <div className="absolute left-1/2 top-full z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] -translate-x-1/2">
             <PriceFilterSlider
               min={priceMin}
               max={priceMax}

@@ -54,6 +54,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       selectedOption: hasOption
         ? {
             type: product.selectible_option!.option_type,
+            label: product.selectible_option!.option_name,
             value: selectedOption!,
           }
         : undefined,

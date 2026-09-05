@@ -69,10 +69,10 @@ export default function ProductCard({ product }: ProductCardProps) {
     <>
       <article className="group overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-md">
         {/* Product image */}
-        <div className="relative aspect-[4/3] bg-[#f0f0f0]">
+        <div className="relative aspect-[4/4] bg-[#f0f0f0]">
           <Link
             href={`/products/${product.id}`}
-            className="relative block aspect-[4/3] overflow-hidden bg-[#f0f0f0]"
+            className="relative block aspect-[4/4] overflow-hidden bg-[#f0f0f0]"
           >
             <Image
               src={getProductImage(product.category)}

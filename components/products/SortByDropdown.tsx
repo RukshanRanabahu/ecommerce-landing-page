@@ -84,7 +84,7 @@ export default function SortByDropdown({
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-700 transition-colors hover:border-gray-300 focus:outline-none"
+        className="flex w-full items-center justify-between rounded-full border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-700 transition-colors hover:border-gray-300 focus:outline-none"
       >
         <span className="font-medium text-red-500">
           {selectedOption?.label}
