@@ -14,6 +14,9 @@ interface ProductListingProps {
 const ITEMS_PER_PAGE = 16;
 
 const parsePriceParam = (value: string | null, fallback: number) => {
+  if (value === null || value.trim() === "") {
+    return fallback;
+  }
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
 };
@@ -257,7 +260,7 @@ export default function ProductListing({ products }: ProductListingProps) {
               type="button"
               onClick={() => updatePage(Math.max(1, safeCurrentPage - 1))}
               disabled={safeCurrentPage === 1}
-              className="px-3 py-1.5 text-sm text-gray-600 transition-colors hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
+              className="px-3 py-1.5 text-sm text-gray-600 transition-colors hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
             >
               Previous
             </button>
@@ -268,7 +271,7 @@ export default function ProductListing({ products }: ProductListingProps) {
                   key={page}
                   type="button"
                   onClick={() => updatePage(page)}
-                  className={`h-8 w-8 rounded-lg text-sm font-medium transition-colors ${
+                  className={`h-8 w-8 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                     safeCurrentPage === page
                       ? "bg-gray-900 text-white"
                       : "text-gray-600 hover:bg-gray-100"
@@ -285,7 +288,7 @@ export default function ProductListing({ products }: ProductListingProps) {
                 updatePage(Math.min(totalPages, safeCurrentPage + 1))
               }
               disabled={safeCurrentPage === totalPages}
-              className="px-3 py-1.5 text-sm text-gray-600 transition-colors hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
+              className="px-3 py-1.5 text-sm text-gray-600 transition-colors hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
             >
               Next
             </button>

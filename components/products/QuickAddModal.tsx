@@ -96,7 +96,7 @@ export default function QuickAddModal({
           className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between">
             <div>
               <h2
                 id="quick-add-title"

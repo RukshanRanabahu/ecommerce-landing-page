@@ -84,7 +84,7 @@ export default function SortByDropdown({
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center justify-between rounded-full border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-700 transition-colors hover:border-gray-300 focus:outline-none"
+        className="flex w-full items-center justify-between rounded-full border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-700 transition-colors hover:border-gray-300 focus:outline-none cursor-pointer"
       >
         <span className="font-medium text-red-500">
           {selectedOption?.label}
@@ -107,7 +107,7 @@ export default function SortByDropdown({
                 key={option.value}
                 type="button"
                 onClick={() => handleSelect(option.value)}
-                className={`w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${
+                className={`w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 cursor-pointer ${
                   isActive
                     ? "font-semibold text-red-500"
                     : "font-normal text-gray-700"

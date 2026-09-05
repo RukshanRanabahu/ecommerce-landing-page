@@ -344,7 +344,7 @@ export default function CheckoutForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-xl bg-gray-900 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-xl bg-gray-900 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
         >
           {isSubmitting ? "Processing..." : "Place Order"}
         </button>

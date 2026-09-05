@@ -88,7 +88,7 @@ function Dropdown({ label, active, children }: DropdownProps) {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors ${
+        className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
           active
             ? "border-gray-800 bg-gray-800 text-white"
             : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
@@ -129,7 +129,7 @@ export default function ProductFilters({
         <button
           type="button"
           onClick={() => onCategoryChange("all")}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
             selectedCategory === "all"
               ? "bg-gray-900 text-white"
               : "border border-gray-200 bg-white text-gray-600 hover:border-gray-400"
@@ -143,7 +143,7 @@ export default function ProductFilters({
             key={category}
             type="button"
             onClick={() => onCategoryChange(category)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
               selectedCategory === category
                 ? "bg-gray-900 text-white"
                 : "border border-gray-200 bg-white text-gray-600 hover:border-gray-400"

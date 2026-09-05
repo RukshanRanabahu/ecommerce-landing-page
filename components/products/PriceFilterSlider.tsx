@@ -18,8 +18,8 @@ export default function PriceFilterSlider({
   value,
   onChange,
 }: PriceFilterSliderProps) {
-  const minValue = value.min;
-  const maxValue = value.max;
+  const minValue = Math.max(min, Math.min(value.min, value.max));
+  const maxValue = Math.min(max, Math.max(value.max, value.min));
 
   const range = max - min;
 
@@ -48,10 +48,16 @@ export default function PriceFilterSlider({
     });
   };
 
-  const parseInput = (input: string) => {
-    const parsed = Number(input.replace(/\D/g, ""));
+  const parseInput = (input: string, fallback: number) => {
+    const cleaned = input.replace(/\D/g, "");
 
-    return Number.isNaN(parsed) ? min : parsed;
+    if (cleaned === "") {
+      return fallback;
+    }
+
+    const parsed = Number(cleaned);
+
+    return Number.isFinite(parsed) ? parsed : fallback;
   };
 
   return (
@@ -78,7 +84,7 @@ export default function PriceFilterSlider({
         <input
           type="range"
           min={min}
-          max={max}
+          max={maxValue}
           step={1}
           value={minValue}
           onChange={(event) => updateMin(Number(event.target.value))}
@@ -92,7 +98,7 @@ export default function PriceFilterSlider({
         {/* Maximum range input */}
         <input
           type="range"
-          min={min}
+          min={minValue}
           max={max}
           step={1}
           value={maxValue}
@@ -100,7 +106,7 @@ export default function PriceFilterSlider({
           aria-label="Maximum price"
           className="absolute inset-0 h-5 w-full cursor-pointer appearance-none bg-transparent opacity-0"
           style={{
-            zIndex: 4,
+            zIndex: maxValue <= minValue ? 5 : 4,
           }}
         />
 
@@ -132,7 +138,7 @@ export default function PriceFilterSlider({
             type="text"
             inputMode="numeric"
             value={minValue}
-            onChange={(event) => updateMin(parseInput(event.target.value))}
+            onChange={(event) => updateMin(parseInput(event.target.value, min))}
             aria-label="Minimum price"
             className="w-full rounded-full border border-gray-200 py-2 pl-6 pr-3 text-center text-sm text-gray-700 outline-none focus:border-blue-400"
           />
@@ -149,7 +155,7 @@ export default function PriceFilterSlider({
             type="text"
             inputMode="numeric"
             value={maxValue}
-            onChange={(event) => updateMax(parseInput(event.target.value))}
+            onChange={(event) => updateMax(parseInput(event.target.value, max))}
             aria-label="Maximum price"
             className="w-full rounded-full border border-gray-200 py-2 pl-6 pr-3 text-center text-sm text-gray-700 outline-none focus:border-blue-400"
           />
