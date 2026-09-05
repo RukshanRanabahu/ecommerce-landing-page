@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Product } from "@/types/product";
 import ProductFilters from "./ProductFilters";
 import ProductGrid from "./ProductGrid";
@@ -13,10 +14,33 @@ interface ProductListingProps {
 const ITEMS_PER_PAGE = 16;
 
 export default function ProductListing({ products }: ProductListingProps) {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [sortOption, setSortOption] = useState<SortOption>("release_desc");
-  const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const selectedCategory = searchParams.get("category") ?? "all";
+
+  const brandParam = searchParams.get("brand");
+
+  const selectedBrands = useMemo(
+    () => (brandParam ? brandParam.split(",") : []),
+    [brandParam],
+  );
+
+  const sortParam = searchParams.get("sort");
+
+  const sortOption: SortOption =
+    sortParam === "release_asc" ||
+    sortParam === "price_desc" ||
+    sortParam === "price_asc"
+      ? sortParam
+      : "release_desc";
+
+  const pageParam = searchParams.get("page");
+
+  const currentPage = Math.max(
+    1,
+    Number.isNaN(Number(pageParam)) ? 1 : Number(pageParam),
+  );
 
   const priceBounds = useMemo(() => {
     if (products.length === 0) {
@@ -34,7 +58,16 @@ export default function ProductListing({ products }: ProductListingProps) {
     };
   }, [products]);
 
-  const [priceRange, setPriceRange] = useState(priceBounds);
+  const minPriceParam = searchParams.get("minPrice");
+  const maxPriceParam = searchParams.get("maxPrice");
+
+  const priceRange = useMemo(
+    () => ({
+      min: minPriceParam ? Number(minPriceParam) : priceBounds.min,
+      max: maxPriceParam ? Number(maxPriceParam) : priceBounds.max,
+    }),
+    [minPriceParam, maxPriceParam, priceBounds],
+  );
 
   const categories = useMemo(
     () => [...new Set(products.map((product) => product.category))],
@@ -83,34 +116,94 @@ export default function ProductListing({ products }: ProductListingProps) {
   const totalPages = Math.ceil(
     filteredAndSortedProducts.length / ITEMS_PER_PAGE,
   );
+  const safeCurrentPage =
+    totalPages > 0 ? Math.min(currentPage, totalPages) : 1;
 
   const paginatedProducts = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
 
     return filteredAndSortedProducts.slice(
       startIndex,
       startIndex + ITEMS_PER_PAGE,
     );
-  }, [filteredAndSortedProducts, currentPage]);
+  }, [filteredAndSortedProducts, safeCurrentPage]);
 
   const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setCurrentPage(1);
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (category === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", category);
+    }
+
+    params.delete("page");
+
+    router.replace(
+      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
+      {
+        scroll: false,
+      },
+    );
   };
 
   const handleBrandToggle = (brand: string) => {
-    setSelectedBrands((current) =>
-      current.includes(brand)
-        ? current.filter((item) => item !== brand)
-        : [...current, brand],
-    );
+    const params = new URLSearchParams(searchParams.toString());
 
-    setCurrentPage(1);
+    const currentBrands = params.get("brand")
+      ? params.get("brand")!.split(",")
+      : [];
+
+    const updatedBrands = currentBrands.includes(brand)
+      ? currentBrands.filter((currentBrand) => currentBrand !== brand)
+      : [...currentBrands, brand];
+
+    if (updatedBrands.length === 0) {
+      params.delete("brand");
+    } else {
+      params.set("brand", updatedBrands.join(","));
+    }
+
+    params.delete("page");
+
+    router.replace(
+      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
+      {
+        scroll: false,
+      },
+    );
   };
 
   const handleSortChange = (sort: SortOption) => {
-    setSortOption(sort);
-    setCurrentPage(1);
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (sort === "release_desc") {
+      params.delete("sort");
+    } else {
+      params.set("sort", sort);
+    }
+
+    params.delete("page");
+
+    router.replace(
+      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
+      { scroll: false },
+    );
+  };
+
+  const updatePage = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (page === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", String(page));
+    }
+
+    router.replace(
+      `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
+      { scroll: false },
+    );
   };
 
   return (
@@ -129,8 +222,28 @@ export default function ProductListing({ products }: ProductListingProps) {
           priceMin={priceBounds.min}
           priceMax={priceBounds.max}
           onPriceChange={(range) => {
-            setPriceRange(range);
-            setCurrentPage(1);
+            const params = new URLSearchParams(searchParams.toString());
+
+            if (range.min <= priceBounds.min) {
+              params.delete("minPrice");
+            } else {
+              params.set("minPrice", String(range.min));
+            }
+
+            if (range.max >= priceBounds.max) {
+              params.delete("maxPrice");
+            } else {
+              params.set("maxPrice", String(range.max));
+            }
+
+            params.delete("page");
+
+            router.replace(
+              `${pathname}${params.toString() ? `?${params.toString()}` : ""}`,
+              {
+                scroll: false,
+              },
+            );
           }}
           sortOption={sortOption}
           onSortChange={handleSortChange}
@@ -148,8 +261,8 @@ export default function ProductListing({ products }: ProductListingProps) {
           <div className="mt-10 flex items-center justify-end gap-1">
             <button
               type="button"
-              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-              disabled={currentPage === 1}
+              onClick={() => updatePage(Math.max(1, safeCurrentPage - 1))}
+              disabled={safeCurrentPage === 1}
               className="px-3 py-1.5 text-sm text-gray-600 transition-colors hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Previous
@@ -160,9 +273,9 @@ export default function ProductListing({ products }: ProductListingProps) {
                 <button
                   key={page}
                   type="button"
-                  onClick={() => setCurrentPage(page)}
+                  onClick={() => updatePage(page)}
                   className={`h-8 w-8 rounded-lg text-sm font-medium transition-colors ${
-                    currentPage === page
+                    safeCurrentPage === page
                       ? "bg-gray-900 text-white"
                       : "text-gray-600 hover:bg-gray-100"
                   }`}
@@ -175,9 +288,9 @@ export default function ProductListing({ products }: ProductListingProps) {
             <button
               type="button"
               onClick={() =>
-                setCurrentPage((page) => Math.min(totalPages, page + 1))
+                updatePage(Math.min(totalPages, safeCurrentPage + 1))
               }
-              disabled={currentPage === totalPages}
+              disabled={safeCurrentPage === totalPages}
               className="px-3 py-1.5 text-sm text-gray-600 transition-colors hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Next
