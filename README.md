@@ -1,4 +1,4 @@
-# ecommerce landing page
+# E-commerce landing page
 
 A responsive e-commerce frontend application built as part of the Flat Rock Technology frontend assessment.
 
