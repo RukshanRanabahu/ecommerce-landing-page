@@ -1,6 +1,6 @@
 # E-commerce landing page
 
-A responsive e-commerce frontend application built as part of the Flat Rock Technology frontend assessment.
+A responsive e-commerce frontend application.
 
 The application provides a product listing page, product details page, shopping cart, quick-add functionality, price/category/brand filtering, sorting, pagination, and checkout functionality integrated with the supplied backend API.
 
