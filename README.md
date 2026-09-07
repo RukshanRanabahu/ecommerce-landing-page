@@ -1,4 +1,4 @@
-# FRT Frontend Assessment
+# ecommerce landing page
 
 A responsive e-commerce frontend application built as part of the Flat Rock Technology frontend assessment.
 
